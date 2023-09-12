@@ -21,13 +21,13 @@ class Tester(object):
         self.lib = ctypes.cdll.LoadLibrary(base_file)
         self.lib.testHead.argtypes = [ctypes.c_void_p, ctypes.c_int64, ctypes.c_int64]
         self.lib.testTail.argtypes = [ctypes.c_void_p, ctypes.c_int64, ctypes.c_int64]
-        self.lib.test_link_prediction.argtypes = [ctypes.c_int64]
+        self.lib.test_link_prediction.argtypes = [ctypes.c_int64, ctypes.c_int64]
 
-        self.lib.getTestLinkMRR.argtypes = [ctypes.c_int64]
-        self.lib.getTestLinkMR.argtypes = [ctypes.c_int64]
-        self.lib.getTestLinkHit10.argtypes = [ctypes.c_int64]
-        self.lib.getTestLinkHit3.argtypes = [ctypes.c_int64]
-        self.lib.getTestLinkHit1.argtypes = [ctypes.c_int64]
+        self.lib.getTestLinkMRR.argtypes = [ctypes.c_int64, ctypes.c_int64]
+        self.lib.getTestLinkMR.argtypes = [ctypes.c_int64, ctypes.c_int64]
+        self.lib.getTestLinkHit10.argtypes = [ctypes.c_int64, ctypes.c_int64]
+        self.lib.getTestLinkHit3.argtypes = [ctypes.c_int64, ctypes.c_int64]
+        self.lib.getTestLinkHit1.argtypes = [ctypes.c_int64, ctypes.c_int64]
 
         self.lib.getTestLinkMRR.restype = ctypes.c_float
         self.lib.getTestLinkMR.restype = ctypes.c_float
@@ -67,7 +67,7 @@ class Tester(object):
             'mode': data['mode']
         })
 
-    def run_link_prediction(self, type_constrain = False):
+    def run_link_prediction(self, type_constrain = False,link_prediction_type=0):
         self.lib.initTest()
         self.data_loader.set_sampling_mode('link')
         if type_constrain:
@@ -80,13 +80,17 @@ class Tester(object):
             self.lib.testHead(score.__array_interface__["data"][0], index, type_constrain)
             score = self.test_one_step(data_tail)
             self.lib.testTail(score.__array_interface__["data"][0], index, type_constrain)
-        self.lib.test_link_prediction(type_constrain)
+        self.lib.test_link_prediction(type_constrain,link_prediction_type)
 
-        mrr = self.lib.getTestLinkMRR(type_constrain)
-        mr = self.lib.getTestLinkMR(type_constrain)
-        hit10 = self.lib.getTestLinkHit10(type_constrain)
-        hit3 = self.lib.getTestLinkHit3(type_constrain)
-        hit1 = self.lib.getTestLinkHit1(type_constrain)
+        mrr = self.lib.getTestLinkMRR(type_constrain,link_prediction_type)
+        mr = self.lib.getTestLinkMR(type_constrain,link_prediction_type)
+        hit10 = self.lib.getTestLinkHit10(type_constrain,link_prediction_type)
+        hit3 = self.lib.getTestLinkHit3(type_constrain,link_prediction_type)
+        hit1 = self.lib.getTestLinkHit1(type_constrain,link_prediction_type)
+        if link_prediction_type==1:
+            print('Right_Link_Prediction')
+        if link_prediction_type==2:
+            print('Left_Link_Prediction')
         print (hit10)
         return mrr, mr, hit10, hit3, hit1
 

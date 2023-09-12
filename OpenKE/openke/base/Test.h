@@ -18,6 +18,10 @@ REAL l1_filter_tot_constrain = 0, l1_tot_constrain = 0, r1_tot_constrain = 0, r1
 REAL l3_filter_tot_constrain = 0, l3_tot_constrain = 0, r3_tot_constrain = 0, r3_filter_tot_constrain = 0, l_filter_tot_constrain = 0, r_filter_tot_constrain = 0, r_filter_rank_constrain = 0, r_rank_constrain = 0, r_filter_reci_rank_constrain = 0, r_reci_rank_constrain = 0;
 REAL hit1, hit3, hit10, mr, mrr;
 REAL hit1TC, hit3TC, hit10TC, mrTC, mrrTC;
+REAL right_hit1, right_hit3, right_hit10, right_mr, right_mrr;
+REAL right_hit1TC, right_hit3TC, right_hit10TC, right_mrTC, right_mrrTC;
+REAL left_hit1, left_hit3, left_hit10, left_mr, left_mrr;
+REAL left_hit1TC, left_hit3TC, left_hit10TC, left_mrTC, left_mrrTC;
 
 extern "C"
 void initTest() {
@@ -229,7 +233,7 @@ void testRel(REAL *con) {
 
 
 extern "C"
-void test_link_prediction(bool type_constrain = false) {
+void test_link_prediction(bool type_constrain = false,INT link_prediction_type=0) {
     l_rank /= testTotal;
     r_rank /= testTotal;
     l_reci_rank /= testTotal;
@@ -275,7 +279,19 @@ void test_link_prediction(bool type_constrain = false) {
     hit10 = (l_filter_tot+r_filter_tot) / 2;
     hit3 = (l3_filter_tot+r3_filter_tot) / 2;
     hit1 = (l1_filter_tot+r1_filter_tot) / 2;
-
+	
+	right_mrr = r_filter_reci_rank;
+    right_mr = r_filter_rank;
+    right_hit10 = r_filter_tot;
+    right_hit3 = r3_filter_tot;
+    right_hit1 = r1_filter_tot;
+	
+	left_mrr = l_filter_reci_rank;
+    left_mr = l_filter_rank;
+    left_hit10 = l_filter_tot;
+    left_hit3 = l3_filter_tot;
+    left_hit1 = l1_filter_tot;
+	
     if (type_constrain) {
         //type constrain
         l_rank_constrain /= testTotal;
@@ -323,6 +339,20 @@ void test_link_prediction(bool type_constrain = false) {
         hit10TC = (l_filter_tot_constrain+r_filter_tot_constrain) / 2;
         hit3TC = (l3_filter_tot_constrain+r3_filter_tot_constrain) / 2;
         hit1TC = (l1_filter_tot_constrain+r1_filter_tot_constrain) / 2;
+		
+		right_mrrTC = r_filter_reci_rank_constrain;
+        right_mrTC = r_filter_rank_constrain;
+        right_hit10TC = r_filter_tot_constrain;
+        right_hit3TC = r3_filter_tot_constrain;
+        right_hit1TC = r1_filter_tot_constrain;
+		
+		left_mrrTC = l_filter_reci_rank_constrain;
+        left_mrTC = l_filter_rank_constrain;
+        left_hit10TC = l_filter_tot_constrain;
+        left_hit3TC = l3_filter_tot_constrain;
+        left_hit1TC = l1_filter_tot_constrain;
+		
+		
     }
 }
 
@@ -354,37 +384,90 @@ void test_relation_prediction() {
 }
 
 extern "C"
-REAL getTestLinkHit10(bool type_constrain = false) {
-    if (type_constrain)
-        return hit10TC;
-    printf("%f\n", hit10);
-    return hit10;
+REAL getTestLinkHit10(bool type_constrain = false,INT link_prediction_type=0) {
+    if (link_prediction_type==1){
+		if (type_constrain)
+			return right_hit10TC;
+		printf("%f\n", right_hit10);
+		return right_hit10;
+	}
+	if (link_prediction_type==2){
+		if (type_constrain)
+			return left_hit10TC;
+		printf("%f\n", left_hit10);
+		return left_hit10;
+	}
+	if (type_constrain)
+		return hit10TC;
+	printf("%f\n", hit10);
+	return hit10;
+	
 }
 
 extern "C"
-REAL  getTestLinkHit3(bool type_constrain = false) {
-    if (type_constrain)
+REAL  getTestLinkHit3(bool type_constrain = false,INT link_prediction_type=0) {
+    if (link_prediction_type==1){
+		if (type_constrain)
+			return right_hit3TC;
+		return right_hit3;
+	}
+	if (link_prediction_type==2){
+		if (type_constrain)
+			return left_hit3TC;
+		return left_hit3;
+	}
+	if (type_constrain)
         return hit3TC;
     return hit3;
 }
 
 extern "C"
-REAL  getTestLinkHit1(bool type_constrain = false) {
-    if (type_constrain)
+REAL  getTestLinkHit1(bool type_constrain = false,INT link_prediction_type=0) {
+    if (link_prediction_type==1){
+		if (type_constrain)
+			return right_hit1TC;    
+		return right_hit1;
+	}
+	if (link_prediction_type==2){
+		if (type_constrain)
+			return left_hit1TC;    
+		return left_hit1;
+	}
+	if (type_constrain)
         return hit1TC;    
     return hit1;
 }
 
 extern "C"
-REAL  getTestLinkMR(bool type_constrain = false) {
-    if (type_constrain)
+REAL  getTestLinkMR(bool type_constrain = false,INT link_prediction_type=0) {
+    if (link_prediction_type==1){
+		if (type_constrain)
+			return right_mrTC;
+		return right_mr;
+	}
+	if (link_prediction_type==2){
+		if (type_constrain)
+			return left_mrTC;
+		return left_mr;
+	}
+	if (type_constrain)
         return mrTC;
     return mr;
 }
 
 extern "C"
-REAL  getTestLinkMRR(bool type_constrain = false) {
-    if (type_constrain)
+REAL  getTestLinkMRR(bool type_constrain = false,INT link_prediction_type=0) {
+    if (link_prediction_type==1){
+		if (type_constrain)
+			return right_mrrTC;    
+		return right_mrr;
+	}
+	if (link_prediction_type==2){
+		if (type_constrain)
+			return left_mrrTC;    
+		return left_mrr;
+	}
+	if (type_constrain)
         return mrrTC;    
     return mrr;
 }
