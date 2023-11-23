@@ -1,5 +1,7 @@
 #!/bin/bash
 mkdir data
+mkdir data/BaseBiomarker
+mkdir data/BaseRelapse
 mkdir data/Biomarker
 mkdir data/Relapse
 mkdir data/WN18RR
@@ -9,6 +11,8 @@ mkdir data/nations
 mkdir data/kinship
 mkdir data/umls
 mkdir saved_models
+tar -xvf BaseBiomarker.tar.gz -C data/BaseBiomarker
+tar -xvf BaseRelapse.tar.gz -C data/BaseRelapse
 tar -xvf Biomarker.tar.gz -C data/Biomarker
 tar -xvf Relapse.tar.gz -C data/Relapse
 tar -xvf WN18RR.tar.gz -C data/WN18RR
@@ -17,6 +21,8 @@ tar -xvf FB15k-237.tar.gz -C data/FB15k-237
 tar -xvf umls.tar.gz -C data/umls
 tar -xvf kinship.tar.gz -C data/kinship
 tar -xvf nations.tar.gz -C data/nations
+python wrangle_KG.py BaseBiomarker
+python wrangle_KG.py BaseRelapse
 python wrangle_KG.py Biomarker
 python wrangle_KG.py Relapse
 python wrangle_KG.py WN18RR
