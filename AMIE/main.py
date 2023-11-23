@@ -18,14 +18,14 @@ def worker_function(range_x):
   files_list = ['train.txt', 'test.txt', 'amie-' + benchmark_name + '.txt']
   for f in files_list:
     if f.find('amie-') == -1:
-      data = pd.read_csv(r'./data/' + benchmark_name + '/' + f, sep='\t', header=None, names=['s', 'p', 'o'])
+      data = pd.read_csv(r'./Data/' + benchmark_name + '/' + f, sep='\t', header=None, names=['s', 'p', 'o'])
       df = pd.DataFrame(data)
       df = df.where((pd.notnull(df)), None)
 
       con.execute("DROP TABLE IF EXISTS " + f.replace('.txt', '') + "_triples ")
       con.execute("CREATE TABLE " + f.replace('.txt', '') + "_triples AS SELECT * FROM df")
     else:
-      data = pd.read_csv(r'./data/' + benchmark_name + '/' + f, sep="\t|=>", header=None,
+      data = pd.read_csv(r'./Data/' + benchmark_name + '/' + f, sep="\t|=>", header=None,
                          names=['Body', 'Head', 'Head_Coverage', 'Std_Confidence', 'PCA_Confidence', 'Positive_Examples',
                                 'Body_size', 'PCA_Body_size', 'Functional_variable', 'n', 'nn', 'nnn']
                          , engine="python", encoding="ISO-8859-1")
@@ -175,7 +175,7 @@ if __name__ == "__main__":
 
   con = duckdb.connect(database=':memory:')
   files_list = ['test.txt']
-  data = pd.read_csv(r'./data/' + benchmark_name + '/test.txt', sep='\t', header=None, names=['s', 'p', 'o'])
+  data = pd.read_csv(r'./Data/' + benchmark_name + '/test.txt', sep='\t', header=None, names=['s', 'p', 'o'])
   df = pd.DataFrame(data)
   df = df.where((pd.notnull(df)), None)
   con.execute("DROP TABLE IF EXISTS test_triples ")
